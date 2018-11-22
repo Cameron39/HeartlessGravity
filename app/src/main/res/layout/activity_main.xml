@@ -7,33 +7,40 @@
     android:background="@drawable/backgroundmain"
     tools:context=".MyActivity">
 
+    <EditText
+        android:id="@+id/txtHelp2"
+        android:layout_width="356dp"
+        android:layout_height="131dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:ems="10"
+        android:inputType="none"
+        android:text="@string/HelpText"
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Inverse"
+        android:textColor="@color/colorAccent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.666"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.019" />
+
     <Button
         android:id="@+id/btnlaunch"
         style="@android:style/Widget.Holo.Button"
-        android:layout_width="87dp"
-        android:layout_height="52dp"
+        android:layout_width="129dp"
+        android:layout_height="287dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="224dp"
+        android:layout_marginTop="208dp"
         android:layout_marginEnd="8dp"
         android:text="@string/launch"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.782"
+        app:layout_constraintHorizontal_bias="0.184"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/brnHelp"
-        style="@android:style/Widget.Holo.Button"
-        android:layout_width="87dp"
-        android:layout_height="52dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="40dp"
-        android:layout_marginEnd="8dp"
-        android:text="@string/help"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.782"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnlaunch" />
 
     <Button
         android:id="@+id/btnCredits"
@@ -41,14 +48,14 @@
         android:layout_width="87dp"
         android:layout_height="52dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:text="@string/credits"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.782"
+        app:layout_constraintHorizontal_bias="0.854"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/brnHelp"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/txtHelp2"
+        app:layout_constraintVertical_bias="0.789" />
 </android.support.constraint.ConstraintLayout>
