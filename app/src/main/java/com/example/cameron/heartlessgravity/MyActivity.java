@@ -1,13 +1,23 @@
 package com.example.cameron.heartlessgravity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 public class MyActivity extends Activity {
+
+    public static final String theMessage = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+    }
+
+    public void startGame(View view) {
+        Intent intent = new Intent(this, GameView.class);
+        intent.putExtra(theMessage, "Other Info"); //maybe pass if it is a pause or restart
+        startActivity(intent);
     }
 }
