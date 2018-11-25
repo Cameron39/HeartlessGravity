@@ -235,8 +235,9 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
             backPaint.setStyle(Paint.Style.FILL);
             canvas.drawText("RY:" + String.valueOf(shipYVel), 50,50, backPaint);
             canvas.drawText("RX:" + String.valueOf(shipXVel), 50, 80, backPaint);
-            canvas.drawText("FY:" + String.valueOf(flingYVel), 400, 50, backPaint);
-            canvas.drawText("FX:" + String.valueOf(flingXVel), 400, 80, backPaint);
+            canvas.drawText("FY:" + String.valueOf(flingYVel), 500, 50, backPaint);
+            canvas.drawText("FX:" + String.valueOf(flingXVel), 500, 80, backPaint);
+            canvas.drawText("Time:" + (SystemClock.elapsedRealtime() - startTime), 50, (canvas.getHeight()-50), backPaint);
 
 
             //if doing collision, check here
