@@ -31,7 +31,7 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
     GameView gameView;
     Paint backPaint = new Paint();
     int shipXLoc = 100, shipYLoc = 100;
-    double shipXVel = 5, shipYVel = 5, planetGravity = 0.5, maxVel = 10, minVel = -10;
+    double shipXVel = 0, shipYVel = 5, planetGravity = 0.5, maxVel = 10, minVel = -10;
     //todo: remove this maybe? for debugging
     double flingXVel = 0, flingYVel = 0;
     Bitmap mainShip;
@@ -112,9 +112,9 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
             shipXVel += flingXVel;
             shipYVel += flingYVel;
             if (shipYVel > maxVel) { shipYVel = maxVel; }
-            if (shipYVel > minVel) { shipYVel = minVel; }
+            if (shipYVel < minVel) { shipYVel = minVel; }
             if (shipXVel > maxVel) { shipXVel = maxVel; }
-            if (shipXVel > minVel) { shipXVel = minVel; }
+            if (shipXVel < minVel) { shipXVel = minVel; }
             Log.d(TAG + "OnFling-Post", "Velocity: " + shipXVel + "," + shipYVel);
             startTime = SystemClock.elapsedRealtime();
         }
