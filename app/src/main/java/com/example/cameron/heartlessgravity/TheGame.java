@@ -31,7 +31,9 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
     GameView gameView;
     Paint backPaint = new Paint();
     int shipXLoc = 100, shipYLoc = 100;
-    double shipXVel = 5, shipYVel = 5, planetGravity = 0.5, maxVel = 10;
+    double shipXVel = 5, shipYVel = 5, planetGravity = 0.5, maxVel = 10, minVel = -10;
+    //todo: remove this maybe? for debugging
+    double flingXVel = 0, flingYVel = 0;
     Bitmap mainShip;
     private GestureDetector getGesture;
     Rect shipRect, touchRect;
@@ -105,10 +107,14 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
         if (hasShipCollision(e1) || hasShipCollision(e2)) {
             Log.d(TAG + "OnFling-Pre", "Velocity: " + shipXVel + "," + shipYVel);
-            shipXVel += (velocityX/1000);
-            shipYVel += (velocityY/1000);
+            flingXVel = velocityX/500;
+            flingYVel = velocityY/500;
+            shipXVel += flingXVel;
+            shipYVel += flingYVel;
             if (shipYVel > maxVel) { shipYVel = maxVel; }
+            if (shipYVel > minVel) { shipYVel = minVel; }
             if (shipXVel > maxVel) { shipXVel = maxVel; }
+            if (shipXVel > minVel) { shipXVel = minVel; }
             Log.d(TAG + "OnFling-Post", "Velocity: " + shipXVel + "," + shipYVel);
             startTime = SystemClock.elapsedRealtime();
         }
@@ -209,6 +215,9 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
 //            paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC));
 //            paint.setTextScaleX(1.f);
 //            paint.setAlpha(255);
+            Paint paint = new Paint();
+            paint.setColor(Color.BLACK);
+            paint.setTextSize(16);
 
             if (shipYVel < 0) {
                 //setShipImage(false);
@@ -218,7 +227,16 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
 
             //canvas.drawText(String.valueOf(shipXVel), 0,0, paint);
             //canvas.drawBitmap(bText, 0,0,paint);
+
             canvas.drawBitmap(mainShip, shipXLoc, shipYLoc, backPaint);
+            backPaint.setColor(Color.BLACK);
+            backPaint.setTextSize(40);
+            backPaint.setAntiAlias(true);
+            backPaint.setStyle(Paint.Style.FILL);
+            canvas.drawText("RY:" + String.valueOf(shipYVel), 50,50, backPaint);
+            canvas.drawText("RX:" + String.valueOf(shipXVel), 50, 80, backPaint);
+            canvas.drawText("FY:" + String.valueOf(flingYVel), 400, 50, backPaint);
+            canvas.drawText("FX:" + String.valueOf(flingXVel), 400, 80, backPaint);
 
 
             //if doing collision, check here
@@ -227,6 +245,7 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
             float acceleration = ((SystemClock.elapsedRealtime() - startTime)/1000);
             shipYVel = shipYVel + (planetGravity * acceleration);
             if (shipYVel > maxVel) {shipYVel = maxVel;}
+            if (shipYVel < minVel) {shipYVel = minVel;}
 
             Log.d(TAG + "GS-draw-Vel", "New Y Velocity: " + shipYVel);
 
