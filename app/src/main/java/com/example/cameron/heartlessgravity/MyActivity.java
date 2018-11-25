@@ -7,7 +7,8 @@ import android.view.View;
 
 public class MyActivity extends Activity {
 
-    public static final String theMessage = "MainActivity";
+    public static final String restartStatus = "Status";
+    public boolean restart = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,7 +18,7 @@ public class MyActivity extends Activity {
 
     public void startGame(View view) {
         Intent intent = new Intent(this, TheGame.class);
-        intent.putExtra(theMessage, "Other Info"); //maybe pass if it is a pause or restart
+        intent.putExtra(restartStatus, restart); //maybe pass if it is a pause or restart
         startActivity(intent);
     }
 }
