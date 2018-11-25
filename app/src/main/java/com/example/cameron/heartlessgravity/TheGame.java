@@ -7,7 +7,10 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
+import android.graphics.drawable.PaintDrawable;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.Log;
@@ -16,17 +19,19 @@ import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_UP;
 
 public class TheGame extends Activity implements GestureDetector.OnGestureListener {
 
-    String TAG = "TheGame";
+    String TAG = "TheGame-";
     GameView gameView;
     Paint backPaint = new Paint();
     int shipXLoc = 100, shipYLoc = 100;
-    double shipXVel = 5, shipYVel = 5, planetGravity = 1;
+    double shipXVel = 5, shipYVel = 5, planetGravity = 0.5, maxVel = 10;
     Bitmap mainShip;
     private GestureDetector getGesture;
     Rect shipRect, touchRect;
@@ -102,6 +107,8 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
             Log.d(TAG + "OnFling-Pre", "Velocity: " + shipXVel + "," + shipYVel);
             shipXVel += (velocityX/1000);
             shipYVel += (velocityY/1000);
+            if (shipYVel > maxVel) { shipYVel = maxVel; }
+            if (shipXVel > maxVel) { shipXVel = maxVel; }
             Log.d(TAG + "OnFling-Post", "Velocity: " + shipXVel + "," + shipYVel);
             startTime = SystemClock.elapsedRealtime();
         }
@@ -111,6 +118,7 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
     public boolean onTouchEvent (MotionEvent e) {
 
         switch (e.getActionMasked()) {
+            //todo: cleanup
             case ACTION_UP:
                 mainShip = BitmapFactory.decodeResource(getResources(), R.drawable.ship1fall);
                 break;
@@ -144,6 +152,14 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
         public GameView(Context context) {
             super(context);
             holder = this.getHolder();
+        }
+
+        private void setShipImage(boolean isFalling) {
+            if (isFalling) {
+                mainShip = BitmapFactory.decodeResource(getResources(), R.drawable.ship1fall);
+            } else {
+                mainShip = BitmapFactory.decodeResource(getResources(), R.drawable.ship1acc);
+            }
         }
 
         @Override
@@ -185,15 +201,35 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
         protected void drawTheCanvas(Canvas canvas) {
             backPaint.setAlpha(255);
             canvas.drawColor(Color.GRAY);
+//            Paint paint = new Paint();
+//            Bitmap bText = Bitmap.createBitmap(400, 50, Bitmap.Config.ALPHA_8);
+//            Canvas cText = new Canvas(bText);
+//            paint.setColor(Color.BLACK);
+//            paint.setTextSize(40);
+//            paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC));
+//            paint.setTextScaleX(1.f);
+//            paint.setAlpha(255);
 
+            if (shipYVel < 0) {
+                //setShipImage(false);
+            } else {
+                //setShipImage(true);
+            }
+
+            //canvas.drawText(String.valueOf(shipXVel), 0,0, paint);
+            //canvas.drawBitmap(bText, 0,0,paint);
             canvas.drawBitmap(mainShip, shipXLoc, shipYLoc, backPaint);
+
 
             //if doing collision, check here
 
             //Calculate the new velocity accounting for gravity
             float acceleration = ((SystemClock.elapsedRealtime() - startTime)/1000);
             shipYVel = shipYVel + (planetGravity * acceleration);
-            Log.d(TAG + "GS-draw-Vel", "New Y Vel: " + shipYVel);
+            if (shipYVel > maxVel) {shipYVel = maxVel;}
+
+            Log.d(TAG + "GS-draw-Vel", "New Y Velocity: " + shipYVel);
+
 
             shipXLoc += shipXVel;
             shipYLoc += shipYVel;
