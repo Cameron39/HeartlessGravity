@@ -2,25 +2,20 @@ package com.example.cameron.heartlessgravity;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
-import android.graphics.drawable.PaintDrawable;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.GestureDetector;
-import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.widget.EditText;
-import android.widget.TextView;
 
 import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_UP;
@@ -30,14 +25,15 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
     String TAG = "TheGame-";
     GameView gameView;
     Paint backPaint = new Paint();
-    int shipXLoc = 100, shipYLoc = 100;
+    int shipXLoc = 100, shipYLoc = 100, playerLives = 3;
     double shipXVel = 0, shipYVel = 5, planetGravity = 0.5, maxVel = 10, minVel = -10;
     //todo: remove this maybe? for debugging
     double flingXVel = 0, flingYVel = 0;
     Bitmap mainShip;
     private GestureDetector getGesture;
     Rect shipRect, touchRect;
-    long startTime = 0, stopTime = 0;
+    long startTime = 0, stopTime = 0, flightTime = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +43,7 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
         this.setContentView(gameView);
         getGesture = new GestureDetector(this, this);
         startTime = SystemClock.elapsedRealtime();
+        flightTime = startTime;
         Log.d(TAG+"onCreate", "startTime: " +  startTime);
         mainShip = BitmapFactory.decodeResource(getResources(), R.drawable.ship1fall);
 
@@ -207,14 +204,6 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
         protected void drawTheCanvas(Canvas canvas) {
             backPaint.setAlpha(255);
             canvas.drawColor(Color.GRAY);
-//            Paint paint = new Paint();
-//            Bitmap bText = Bitmap.createBitmap(400, 50, Bitmap.Config.ALPHA_8);
-//            Canvas cText = new Canvas(bText);
-//            paint.setColor(Color.BLACK);
-//            paint.setTextSize(40);
-//            paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC));
-//            paint.setTextScaleX(1.f);
-//            paint.setAlpha(255);
             Paint paint = new Paint();
             paint.setColor(Color.BLACK);
             paint.setTextSize(16);
@@ -225,8 +214,6 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
                 //setShipImage(true);
             }
 
-            //canvas.drawText(String.valueOf(shipXVel), 0,0, paint);
-            //canvas.drawBitmap(bText, 0,0,paint);
 
             canvas.drawBitmap(mainShip, shipXLoc, shipYLoc, backPaint);
             backPaint.setColor(Color.BLACK);
@@ -237,7 +224,8 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
             canvas.drawText("RX:" + String.valueOf(shipXVel), 50, 80, backPaint);
             canvas.drawText("FY:" + String.valueOf(flingYVel), 500, 50, backPaint);
             canvas.drawText("FX:" + String.valueOf(flingXVel), 500, 80, backPaint);
-            canvas.drawText("Time:" + (SystemClock.elapsedRealtime() - startTime), 50, (canvas.getHeight()-50), backPaint);
+            canvas.drawText("Time:" + (SystemClock.elapsedRealtime() - flightTime)/1000, 50, (canvas.getHeight()-50), backPaint);
+            //todo: show lives
 
 
             //if doing collision, check here
@@ -257,14 +245,33 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
             //Hits a wall on the X axis, the sides
             if(shipXLoc < 0 || (shipXLoc + mainShip.getWidth()) > canvas.getWidth()) {
                 shipXVel *= -1;
+                shipYVel = maxVel;
             }
 
             //Hits a wall on the Y axis, the top and bottom
             if(shipYLoc < 0 || (shipYLoc + mainShip.getHeight()) > canvas.getHeight()) {
                 shipYVel *=-1;
                 canvas.drawColor(Color.RED);
+                failure();
+            }
+        }
+
+        public void failure(){
+            playerLives -=1; //decrement a life
+            Log.d(TAG + "GS-failure", "Player Lives: " + playerLives);
+            if (playerLives >= 0) {
+                Log.d(TAG + "GS-failure", "Player Still alive with " + playerLives);
+                //todo: show failure screen for a second. Make this a new intent? Pass the lives back
+                //and forth? What about the gravity and such?
+            } else {
+            //todo: If no more lives, go back to the main screen, send number of seconds
+
+                Intent returnIntent = new Intent();
+                returnIntent.putExtra("playerLives", playerLives);
+                returnIntent.putExtra("flightTime", flightTime);
+                setResult(Activity.RESULT_OK, returnIntent);
+                finish();
             }
         }
     }
-
 }

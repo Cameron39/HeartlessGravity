@@ -19,6 +19,6 @@ public class MyActivity extends Activity {
     public void startGame(View view) {
         Intent intent = new Intent(this, TheGame.class);
         intent.putExtra(restartStatus, restart); //maybe pass if it is a pause or restart
-        startActivity(intent);
+        startActivityForResult(intent, 1);
     }
 }
