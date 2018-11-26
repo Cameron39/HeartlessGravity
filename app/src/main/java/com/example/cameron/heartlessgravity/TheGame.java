@@ -20,6 +20,12 @@ import android.view.SurfaceView;
 import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_UP;
 
+//TODO: increase gravity every 15 seconds
+//TODO: add screen when a life is lost? Maybe not... Reset the ship loc/vel at life lost?
+//TODO: display lives
+//TODO: set background
+//TODO: store the max score? Might be beyond the scope of what is currently known
+
 public class TheGame extends Activity implements GestureDetector.OnGestureListener {
 
     String TAG = "TheGame-";
@@ -265,10 +271,10 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
                 //and forth? What about the gravity and such?
             } else {
             //todo: If no more lives, go back to the main screen, send number of seconds
-
+                int finalFlight = (int)((SystemClock.elapsedRealtime() - flightTime)/1000);
                 Intent returnIntent = new Intent();
                 returnIntent.putExtra("playerLives", playerLives);
-                returnIntent.putExtra("flightTime", flightTime);
+                returnIntent.putExtra("flightTime", finalFlight);
                 setResult(Activity.RESULT_OK, returnIntent);
                 finish();
             }
