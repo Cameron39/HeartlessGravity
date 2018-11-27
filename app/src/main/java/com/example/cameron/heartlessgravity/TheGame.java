@@ -25,6 +25,7 @@ import static android.view.MotionEvent.ACTION_UP;
 //TODO: display lives
 //TODO: set background
 //TODO: store the max score? Might be beyond the scope of what is currently known
+//TODO: add variable for current gravity time or total max flight time
 
 public class TheGame extends Activity implements GestureDetector.OnGestureListener {
 
@@ -38,7 +39,7 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
     Bitmap mainShip;
     private GestureDetector getGesture;
     Rect shipRect, touchRect;
-    long startTime = 0, stopTime = 0, flightTime = 0;
+    long startTime = 0, stopTime = 0, flightTime = 0, totalFlightTime;
 
 
     @Override
@@ -49,6 +50,7 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
         this.setContentView(gameView);
         getGesture = new GestureDetector(this, this);
         startTime = SystemClock.elapsedRealtime();
+        totalFlightTime = startTime;
         flightTime = startTime;
         Log.d(TAG+"onCreate", "startTime: " +  startTime);
         mainShip = BitmapFactory.decodeResource(getResources(), R.drawable.ship1fall);
@@ -231,7 +233,7 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
             canvas.drawText("FY:" + String.valueOf(flingYVel), 500, 50, backPaint);
             canvas.drawText("FX:" + String.valueOf(flingXVel), 500, 80, backPaint);
             canvas.drawText("Time:" + (SystemClock.elapsedRealtime() - flightTime)/1000, 50, (canvas.getHeight()-50), backPaint);
-            //todo: show lives
+            canvas.drawText("Lives:" + playerLives, (canvas.getWidth()-200), (canvas.getHeight()-50), backPaint);
 
 
             //if doing collision, check here
