@@ -23,18 +23,14 @@ import static android.view.MotionEvent.ACTION_UP;
 //TODO: add screen when a life is lost? Maybe not... Reset the ship loc/vel at life lost?
 //TODO: set background
 //TODO: store the max score? Might be beyond the scope of what is currently known
-//TODO: add variable for current gravity time
 //TODO: Use a select case to switch the background around? At 10, 13, and 15 seconds
-//TODO: Switch the displayed time so it shows
-//TODO: Seems that the types (long, Long, double, Double, float) are messing things up.
-//ToDO: Just send the values in the extra bundle as strings. Or go back to ints. Rabbit hole
 
 public class TheGame extends Activity implements GestureDetector.OnGestureListener {
 
     String TAG = "TheGame-";
     GameView gameView;
     Paint backPaint = new Paint();
-    int shipXLoc = 100, shipYLoc = 100, playerLives = 3;
+    int shipXLoc = 100, shipYLoc = 100, playerLives = 3, tempTime = 0;
     double shipXVel = 0, shipYVel = 5, planetGravity = 0.5, maxVel = 10, minVel = -10;
     //todo: remove this maybe? for debugging
     double flingXVel = 0, flingYVel = 0;
@@ -224,7 +220,6 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
                 //setShipImage(true);
             }
 
-
             canvas.drawBitmap(mainShip, shipXLoc, shipYLoc, backPaint);
             backPaint.setColor(Color.BLACK);
             backPaint.setTextSize(40);
@@ -235,7 +230,7 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
             canvas.drawText("RX:" + String.valueOf(shipXVel), 50, 80, backPaint);
             canvas.drawText("FY:" + String.valueOf(flingYVel), 500, 50, backPaint);
             canvas.drawText("FX:" + String.valueOf(flingXVel), 500, 80, backPaint);
-            canvas.drawText("Time:" + (SystemClock.elapsedRealtime() - flightTime)/1000, 50, (canvas.getHeight()-50), backPaint);
+            canvas.drawText("Time:" + (15-(SystemClock.elapsedRealtime() - flightTime)/1000), 50, (canvas.getHeight()-50), backPaint);
             canvas.drawText("Lives:" + playerLives, (canvas.getWidth()-200), (canvas.getHeight()-50), backPaint);
 
 
@@ -266,8 +261,22 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
                 failure();
             }
 
+            //TODO: Add Switch case for time regarding the background
+            //switch
+            tempTime = (int)((SystemClock.elapsedRealtime()-flightTime)/1000);
+            switch (tempTime) {
+                case 12:
+                    break;
+                case 14:
+                    break;
+                case 15:
+                    break;
+
+            }
+
+            //TODO: move this into the above switch
             //Check if time to add more to the gravity, increase if it is. Reset the flight time
-            if (((SystemClock.elapsedRealtime()-flightTime)/1000) > 15) {
+            if (tempTime > 15) {
                 planetGravity += 0.5;
                 flightTime = SystemClock.elapsedRealtime();
             }
@@ -281,13 +290,13 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
             if (playerLives >= 0) {
                 Log.d(TAG + "GS-failure", "Player Still alive with " + playerLives);
                 //todo: show failure screen for a second. Make this a new intent? Pass the lives back
+                //TODO: reset the ship location?
                 //and forth? What about the gravity and such?
             } else {
-            //todo: If no more lives, go back to the main screen, send number of seconds
                 totalFlightTime = (int)((SystemClock.elapsedRealtime() - totalFlightTime)/1000);
                 Intent returnIntent = new Intent();
-                returnIntent.putExtra("gravity", planetGravity);
-                returnIntent.putExtra("flightTime", totalFlightTime);
+                returnIntent.putExtra("gravity", String.valueOf(planetGravity));
+                returnIntent.putExtra("flightTime", String.valueOf(totalFlightTime));
                 setResult(Activity.RESULT_OK, returnIntent);
                 finish();
             }
