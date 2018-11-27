@@ -1,7 +1,6 @@
 package com.example.cameron.heartlessgravity;
 
 import android.app.Activity;
-import android.app.Instrumentation;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -10,8 +9,10 @@ import android.widget.TextView;
 public class MyActivity extends Activity {
 
     public static final String restartStatus = "Status";
-    public boolean restart = false;
-    public int playerLives = 0, flightTime = 0;
+    private boolean restart = false;
+    private Long flightTime;
+    private Double gravityLevel = 0.5;
+    private StringBuilder output;
     TextView txtReturn;
 
     @Override
@@ -32,9 +33,14 @@ public class MyActivity extends Activity {
 
         if (requestCode == 1) { //from TheGame.java
             if (resultCode == Activity.RESULT_OK){
-                playerLives = data.getIntExtra("playerLives", 0);
-                flightTime = data.getIntExtra("flightTime", 0);
-                txtReturn.setText("Lives: " + playerLives + " Time:" + flightTime);
+                //gravityLevel = data.getDoubleExtra("gravity", 0.0);
+                flightTime = data.getLongExtra("flightTime", 0);
+                if (!gravityLevel.isNaN()) {output.append(" Gravity: ").append(gravityLevel);}
+                //if (gravityLevel > 0) {};
+                if (flightTime > 0) {output.append(" Time:").append(flightTime);}
+
+                //output.append("Gravity: ").append(gravityLevel).append(" Time:").append(flightTime);
+                txtReturn.setText(output.toString());
             }
 
         }

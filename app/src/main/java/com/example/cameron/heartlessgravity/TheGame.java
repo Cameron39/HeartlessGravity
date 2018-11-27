@@ -20,12 +20,14 @@ import android.view.SurfaceView;
 import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_UP;
 
-//TODO: increase gravity every 15 seconds
 //TODO: add screen when a life is lost? Maybe not... Reset the ship loc/vel at life lost?
-//TODO: display lives
 //TODO: set background
 //TODO: store the max score? Might be beyond the scope of what is currently known
-//TODO: add variable for current gravity time or total max flight time
+//TODO: add variable for current gravity time
+//TODO: Use a select case to switch the background around? At 10, 13, and 15 seconds
+//TODO: Switch the displayed time so it shows
+//TODO: Seems that the types (long, Long, double, Double, float) are messing things up.
+//ToDO: Just send the values in the extra bundle as strings. Or go back to ints. Rabbit hole
 
 public class TheGame extends Activity implements GestureDetector.OnGestureListener {
 
@@ -39,7 +41,7 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
     Bitmap mainShip;
     private GestureDetector getGesture;
     Rect shipRect, touchRect;
-    long startTime = 0, stopTime = 0, flightTime = 0, totalFlightTime;
+    long startTime = 0, stopTime = 0, flightTime = 0, totalFlightTime = 0;
 
 
     @Override
@@ -228,6 +230,7 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
             backPaint.setTextSize(40);
             backPaint.setAntiAlias(true);
             backPaint.setStyle(Paint.Style.FILL);
+            //TODO: comment out the ship locations
             canvas.drawText("RY:" + String.valueOf(shipYVel), 50,50, backPaint);
             canvas.drawText("RX:" + String.valueOf(shipXVel), 50, 80, backPaint);
             canvas.drawText("FY:" + String.valueOf(flingYVel), 500, 50, backPaint);
@@ -262,7 +265,15 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
                 canvas.drawColor(Color.RED);
                 failure();
             }
+
+            //Check if time to add more to the gravity, increase if it is. Reset the flight time
+            if (((SystemClock.elapsedRealtime()-flightTime)/1000) > 15) {
+                planetGravity += 0.5;
+                flightTime = SystemClock.elapsedRealtime();
+            }
+
         }
+
 
         public void failure(){
             playerLives -=1; //decrement a life
@@ -273,10 +284,10 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
                 //and forth? What about the gravity and such?
             } else {
             //todo: If no more lives, go back to the main screen, send number of seconds
-                int finalFlight = (int)((SystemClock.elapsedRealtime() - flightTime)/1000);
+                totalFlightTime = (int)((SystemClock.elapsedRealtime() - totalFlightTime)/1000);
                 Intent returnIntent = new Intent();
-                returnIntent.putExtra("playerLives", playerLives);
-                returnIntent.putExtra("flightTime", finalFlight);
+                returnIntent.putExtra("gravity", planetGravity);
+                returnIntent.putExtra("flightTime", totalFlightTime);
                 setResult(Activity.RESULT_OK, returnIntent);
                 finish();
             }
