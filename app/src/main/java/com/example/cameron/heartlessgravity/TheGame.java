@@ -34,7 +34,7 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
     double shipXVel = 0, shipYVel = 5, planetGravity = 0.5, maxVel = 10, minVel = -10;
     //todo: remove this maybe? for debugging
     double flingXVel = 0, flingYVel = 0;
-    Bitmap mainShip;
+    Bitmap mainShip, accShip, fllShip;
     private GestureDetector getGesture;
     Rect shipRect, touchRect;
     long startTime = 0, stopTime = 0, flightTime = 0, totalFlightTime = 0;
@@ -51,7 +51,10 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
         totalFlightTime = startTime;
         flightTime = startTime;
         Log.d(TAG+"onCreate", "startTime: " +  startTime);
-        mainShip = BitmapFactory.decodeResource(getResources(), R.drawable.ship1fall);
+        String pathName;
+        accShip = BitmapFactory.decodeResource(getResources(), R.drawable.ship1acc);
+        fllShip = BitmapFactory.decodeResource(getResources(), R.drawable.ship1fall);
+        mainShip = fllShip;
 
     }
 
@@ -129,12 +132,12 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
         switch (e.getActionMasked()) {
             //todo: cleanup
             case ACTION_UP:
-                mainShip = BitmapFactory.decodeResource(getResources(), R.drawable.ship1fall);
+                mainShip = fllShip;
                 break;
 
             case ACTION_DOWN:
                 if (hasShipCollision(e)) {
-                    mainShip = BitmapFactory.decodeResource(getResources(), R.drawable.ship1acc);
+                    mainShip = accShip;
                 }
                 break;
         }
@@ -163,6 +166,7 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
             holder = this.getHolder();
         }
 
+        //TODO: Remove?
         private void setShipImage(boolean isFalling) {
             if (isFalling) {
                 mainShip = BitmapFactory.decodeResource(getResources(), R.drawable.ship1fall);
@@ -180,7 +184,8 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
                 }
 
                 Canvas gameCanvas = holder.lockCanvas();
-                shipRect = new Rect(shipXLoc, shipYLoc, shipXLoc + mainShip.getWidth(), shipYLoc + mainShip.getHeight());
+                //Need to specify the falling ship else the engine thrust can count as failure
+                shipRect = new Rect(shipXLoc, shipYLoc, shipXLoc + fllShip.getWidth(), shipYLoc + fllShip.getHeight());
 
                 drawTheCanvas(gameCanvas);
                 holder.unlockCanvasAndPost(gameCanvas);
@@ -244,18 +249,17 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
 
             Log.d(TAG + "GS-draw-Vel", "New Y Velocity: " + shipYVel);
 
-
             shipXLoc += shipXVel;
             shipYLoc += shipYVel;
 
             //Hits a wall on the X axis, the sides
-            if(shipXLoc < 0 || (shipXLoc + mainShip.getWidth()) > canvas.getWidth()) {
+            if(shipXLoc < 0 || (shipXLoc + fllShip.getWidth()) > canvas.getWidth()) {
                 shipXVel *= -1;
                 shipYVel = maxVel;
             }
 
             //Hits a wall on the Y axis, the top and bottom
-            if(shipYLoc < 0 || (shipYLoc + mainShip.getHeight()) > canvas.getHeight()) {
+            if(shipYLoc < 0 || (shipYLoc + fllShip.getHeight()) > canvas.getHeight()) {
                 shipYVel *=-1;
                 canvas.drawColor(Color.RED);
                 failure();
@@ -271,7 +275,8 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
                     break;
                 case 15:
                     break;
-
+                default:
+                    //TODO: backround needs to be the default
             }
 
             //TODO: move this into the above switch
