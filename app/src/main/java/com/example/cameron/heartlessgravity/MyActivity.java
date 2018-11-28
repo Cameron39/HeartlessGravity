@@ -9,7 +9,12 @@ import android.widget.TextView;
 //TODO: make the gravity and time lengths two different fields
 //TODO: Make the ship launch better.
 //TODO: Make the instructions clearer/better
-
+/*Tips:
+  Don't touch sides
+  SMall flings
+  fling up
+  gravity increases every so often
+*/
 public class MyActivity extends Activity {
 
     public static final String restartStatus = "Status";

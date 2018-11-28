@@ -7,7 +7,11 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.LightingColorFilter;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -33,7 +37,8 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
     String TAG = "TheGame-";
     GameView gameView;
     Paint backPaint = new Paint();
-    int shipXLoc = 100, shipYLoc = 100, playerLives = 3, tempTime = 0;
+    Paint redWarning = new Paint();
+    int shipXLoc = 400, shipYLoc = 100, playerLives = 3, tempTime = 0;
     final int gravityChange = 10; //how long it takes for the gravity to change
     double shipXVel = 0, shipYVel = 5, planetGravity = 0.5, maxVel = 10, minVel = -10;
     //todo: remove this maybe? for debugging
@@ -42,8 +47,6 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
     private GestureDetector getGesture;
     Rect shipRect, touchRect;
     long startTime = 0, stopTime = 0, flightTime = 0, totalFlightTime = 0;
-    LinearLayout theLayout;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,12 +64,7 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
         accShip = BitmapFactory.decodeResource(getResources(), R.drawable.ship1acc);
         fllShip = BitmapFactory.decodeResource(getResources(), R.drawable.ship1fall);
         mainShip = fllShip;
-        //TODO: FIx issue. theLayout is a null reference. WHY?
-        //theLayout = (LinearLayout)findViewById(R.id.linLayout);
-        //theLayout.setBackgroundResource(R.drawable.flightbackground);
-
     }
-
 
 
     @Override
@@ -176,15 +174,6 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
             holder = this.getHolder();
         }
 
-        //TODO: Remove?
-        private void setShipImage(boolean isFalling) {
-            if (isFalling) {
-                mainShip = BitmapFactory.decodeResource(getResources(), R.drawable.ship1fall);
-            } else {
-                mainShip = BitmapFactory.decodeResource(getResources(), R.drawable.ship1acc);
-            }
-        }
-
         @Override
         public void run() {
             while(threadInFocus) {
@@ -224,36 +213,27 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
         protected void drawTheCanvas(Canvas canvas) {
             backPaint.setAlpha(255);
             //canvas.drawColor(Color.GRAY);
-            String pathName; //TODO: needed?
-            //Bitmap flightBackground = BitmapFactory.decodeResource(getResources(), R.drawable.flightbackground);
+            //TODO: try a second paint for the color tinting.
             Bitmap flightBackground = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.flightbackground), canvas.getWidth(), canvas.getHeight(),false);
-            canvas.drawBitmap(flightBackground, 0,0,backPaint);
-            Paint paint = new Paint();
-            paint.setColor(Color.BLACK);
-            paint.setTextSize(16);
-
-            if (shipYVel < 0) {
-                //setShipImage(false);
-            } else {
-                //setShipImage(true);
-            }
-
+            ColorFilter filter = new LightingColorFilter(Color.argb(10, 125, 0,0), 0);
+            redWarning.setColorFilter(filter);
+            //backPaint.setColorFilter(filter);
+            canvas.drawBitmap(flightBackground, 0,0, backPaint);
+            //backPaint.setColorFilter(new PorterDuffColorFilter(Color.RED, PorterDuff.Mode.SRC_IN));
             canvas.drawBitmap(mainShip, shipXLoc, shipYLoc, backPaint);
             backPaint.setColor(Color.BLACK);
-            backPaint.setTextSize(40);
+            backPaint.setTextSize(50);
             backPaint.setAntiAlias(true);
             backPaint.setStyle(Paint.Style.FILL);
-            //TODO: comment out the ship locations
-            canvas.drawText("RY:" + String.valueOf(shipYVel), 50,50, backPaint);
-            canvas.drawText("RX:" + String.valueOf(shipXVel), 50, 80, backPaint);
-            canvas.drawText("FY:" + String.valueOf(flingYVel), 500, 50, backPaint);
-            canvas.drawText("FX:" + String.valueOf(flingXVel), 500, 80, backPaint);
-            //Keep this
-            canvas.drawText("Time:" + (gravityChange-(SystemClock.elapsedRealtime() - flightTime)/1000), 50, (canvas.getHeight()-50), backPaint);
-            canvas.drawText("Lives:" + playerLives, (canvas.getWidth()-200), (canvas.getHeight()-50), backPaint);
 
+            //For debugging purposes
+            //canvas.drawText("RY:" + String.valueOf(shipYVel), 50,50, backPaint);
+            //canvas.drawText("RX:" + String.valueOf(shipXVel), 50, 80, backPaint);
+            //canvas.drawText("FY:" + String.valueOf(flingYVel), 500, 50, backPaint);
+            //canvas.drawText("FX:" + String.valueOf(flingXVel), 500, 80, backPaint);
 
-            //if doing collision, check here
+            canvas.drawText("Gravity Increase In: " + (gravityChange-((SystemClock.elapsedRealtime() - flightTime)/1000)), 50, 50, backPaint);
+            canvas.drawText("Lives:" + playerLives, 50, (canvas.getHeight()-50), backPaint);
 
             //Calculate the new velocity accounting for gravity
             float acceleration = ((SystemClock.elapsedRealtime() - startTime)/1000);
@@ -279,19 +259,7 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
                 failure();
             }
 
-            //TODO: Add Switch case for time regarding the background
-            //switch
             tempTime = (int)((SystemClock.elapsedRealtime()-flightTime)/1000);
-            switch (tempTime) {
-                case 12:
-                    break;
-                case 14:
-                    break;
-                case 15:
-                    break;
-                default:
-                    //TODO: backround needs to be the default
-            }
 
             //TODO: move this into the above switch
             //Check if time to add more to the gravity, increase if it is. Reset the flight time
@@ -311,13 +279,11 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
             Log.d(TAG + "GS-failure", "Player Lives: " + playerLives);
             if (playerLives > 0) {
                 Log.d(TAG + "GS-failure", "Player Still alive with " + playerLives);
-                //todo: show failure screen for a second. Make this a new intent? Pass the lives back
-                //TODO: reset the ship location?
-                //and forth? What about the gravity and such?
+                //TODO: draw a careful
             } else {
                 totalFlightTime = (int)((SystemClock.elapsedRealtime() - totalFlightTime)/1000);
                 Intent returnIntent = new Intent();
-                returnIntent.putExtra("gravity", String.valueOf(planetGravity));
+                returnIntent.putExtra("gravity", String.valueOf((int)(planetGravity/0.5)-1));
                 returnIntent.putExtra("flightTime", String.valueOf(totalFlightTime));
                 setResult(Activity.RESULT_OK, returnIntent);
                 finish();
