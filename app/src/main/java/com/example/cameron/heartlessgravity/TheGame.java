@@ -55,11 +55,13 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
         accShip = BitmapFactory.decodeResource(getResources(), R.drawable.ship1acc);
         fllShip = BitmapFactory.decodeResource(getResources(), R.drawable.ship1fall);
         mainShip = fllShip;
-        //Context context;
-        theLayout = findViewById(R.id.linLayout);
-        theLayout.setBackground(getDrawable(R.drawable.flightbackground));
+        //TODO: FIx issue. theLayout is a null reference. WHY?
+        theLayout = (LinearLayout)findViewById(R.id.linLayout);
+        theLayout.setBackgroundResource(R.drawable.flightbackground);
 
     }
+
+
 
     @Override
     protected void onPause(){
