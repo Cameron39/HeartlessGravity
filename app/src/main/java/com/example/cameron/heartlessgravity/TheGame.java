@@ -9,6 +9,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.Log;
@@ -16,13 +17,12 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.widget.LinearLayout;
 
 import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_UP;
 
 //TODO: add screen when a life is lost? Maybe not... Reset the ship loc/vel at life lost?
-//TODO: set background
-//TODO: store the max score? Might be beyond the scope of what is currently known
 //TODO: Use a select case to switch the background around? At 10, 13, and 15 seconds
 
 public class TheGame extends Activity implements GestureDetector.OnGestureListener {
@@ -38,6 +38,7 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
     private GestureDetector getGesture;
     Rect shipRect, touchRect;
     long startTime = 0, stopTime = 0, flightTime = 0, totalFlightTime = 0;
+    LinearLayout theLayout;
 
 
     @Override
@@ -51,10 +52,12 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
         totalFlightTime = startTime;
         flightTime = startTime;
         Log.d(TAG+"onCreate", "startTime: " +  startTime);
-        String pathName;
         accShip = BitmapFactory.decodeResource(getResources(), R.drawable.ship1acc);
         fllShip = BitmapFactory.decodeResource(getResources(), R.drawable.ship1fall);
         mainShip = fllShip;
+        //Context context;
+        theLayout = findViewById(R.id.linLayout);
+        theLayout.setBackground(getDrawable(R.drawable.flightbackground));
 
     }
 
@@ -150,9 +153,8 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
         touchRect = new Rect(cordX, cordY, (cordX + 50), (cordY + 50));
         if (Rect.intersects(touchRect, shipRect)) {
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
     public class GameView extends SurfaceView implements Runnable {
@@ -177,7 +179,6 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
 
         @Override
         public void run() {
-
             while(threadInFocus) {
                 if (!holder.getSurface().isValid()){
                     continue;
