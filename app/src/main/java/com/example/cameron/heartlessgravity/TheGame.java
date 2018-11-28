@@ -25,6 +25,7 @@ import static android.view.MotionEvent.ACTION_UP;
 //TODO: show score during flight
 //TODO: add screen when a life is lost? Maybe not... Reset the ship loc/vel at life lost?
 //TODO: Use a select case to switch the background around? At 10, 13, and 15 seconds
+//TODO: On the mains screen, make the Gravity the number of gravity increases
 
 
 public class TheGame extends Activity implements GestureDetector.OnGestureListener {
@@ -33,7 +34,7 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
     GameView gameView;
     Paint backPaint = new Paint();
     int shipXLoc = 100, shipYLoc = 100, playerLives = 3, tempTime = 0;
-    final int gravityChange = 15; //how long it takes for the gravity to change
+    final int gravityChange = 10; //how long it takes for the gravity to change
     double shipXVel = 0, shipYVel = 5, planetGravity = 0.5, maxVel = 10, minVel = -10;
     //todo: remove this maybe? for debugging
     double flingXVel = 0, flingYVel = 0;

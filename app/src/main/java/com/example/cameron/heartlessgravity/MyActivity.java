@@ -6,6 +6,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+//TODO: make the gravity and time lengths two different fields
+//TODO: Make the ship launch better.
+//TODO: Make the instructions clearer/better
+
 public class MyActivity extends Activity {
 
     public static final String restartStatus = "Status";
