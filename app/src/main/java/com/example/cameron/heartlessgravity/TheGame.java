@@ -26,6 +26,7 @@ import static android.view.MotionEvent.ACTION_UP;
 //TODO: add screen when a life is lost? Maybe not... Reset the ship loc/vel at life lost?
 //TODO: Use a select case to switch the background around? At 10, 13, and 15 seconds
 
+
 public class TheGame extends Activity implements GestureDetector.OnGestureListener {
 
     String TAG = "TheGame-";
@@ -247,7 +248,7 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
             canvas.drawText("FY:" + String.valueOf(flingYVel), 500, 50, backPaint);
             canvas.drawText("FX:" + String.valueOf(flingXVel), 500, 80, backPaint);
             //Keep this
-            canvas.drawText("Time:" + (15-(SystemClock.elapsedRealtime() - flightTime)/1000), 50, (canvas.getHeight()-50), backPaint);
+            canvas.drawText("Time:" + (gravityChange-(SystemClock.elapsedRealtime() - flightTime)/1000), 50, (canvas.getHeight()-50), backPaint);
             canvas.drawText("Lives:" + playerLives, (canvas.getWidth()-200), (canvas.getHeight()-50), backPaint);
 
 
@@ -297,6 +298,7 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
                 planetGravity += 0.5;
                 maxVel += 5;
                 minVel -= 5;
+                playerLives++;
                 flightTime = SystemClock.elapsedRealtime();
             }
 
@@ -306,7 +308,7 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
         public void failure(){
             playerLives -=1; //decrement a life
             Log.d(TAG + "GS-failure", "Player Lives: " + playerLives);
-            if (playerLives >= 0) {
+            if (playerLives > 0) {
                 Log.d(TAG + "GS-failure", "Player Still alive with " + playerLives);
                 //todo: show failure screen for a second. Make this a new intent? Pass the lives back
                 //TODO: reset the ship location?
