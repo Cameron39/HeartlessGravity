@@ -32,6 +32,7 @@ public class MyActivity extends Activity {
 
         if (requestCode == 1) { //from TheGame.java
             if (resultCode == Activity.RESULT_OK){
+                output = new StringBuilder(); //Must do else it goes on forever!
                 gravityLevel = data.getStringExtra("gravity");
                 flightTime = data.getStringExtra("flightTime");
                 output.append("Gravity: ").append(gravityLevel).append(" Time:").append(flightTime);

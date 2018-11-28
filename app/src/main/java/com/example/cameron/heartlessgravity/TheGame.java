@@ -55,8 +55,8 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
         fllShip = BitmapFactory.decodeResource(getResources(), R.drawable.ship1fall);
         mainShip = fllShip;
         //TODO: FIx issue. theLayout is a null reference. WHY?
-        theLayout = (LinearLayout)findViewById(R.id.linLayout);
-        theLayout.setBackgroundResource(R.drawable.flightbackground);
+        //theLayout = (LinearLayout)findViewById(R.id.linLayout);
+        //theLayout.setBackgroundResource(R.drawable.flightbackground);
 
     }
 
@@ -237,6 +237,7 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
             canvas.drawText("RX:" + String.valueOf(shipXVel), 50, 80, backPaint);
             canvas.drawText("FY:" + String.valueOf(flingYVel), 500, 50, backPaint);
             canvas.drawText("FX:" + String.valueOf(flingXVel), 500, 80, backPaint);
+            //Keep this
             canvas.drawText("Time:" + (15-(SystemClock.elapsedRealtime() - flightTime)/1000), 50, (canvas.getHeight()-50), backPaint);
             canvas.drawText("Lives:" + playerLives, (canvas.getWidth()-200), (canvas.getHeight()-50), backPaint);
 
