@@ -21,6 +21,8 @@ import android.widget.LinearLayout;
 import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_UP;
 
+//TODO: reduce time from 15 seconds to 10???
+//TODO: show score during flight
 //TODO: add screen when a life is lost? Maybe not... Reset the ship loc/vel at life lost?
 //TODO: Use a select case to switch the background around? At 10, 13, and 15 seconds
 
@@ -30,6 +32,7 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
     GameView gameView;
     Paint backPaint = new Paint();
     int shipXLoc = 100, shipYLoc = 100, playerLives = 3, tempTime = 0;
+    final int gravityChange = 15; //how long it takes for the gravity to change
     double shipXVel = 0, shipYVel = 5, planetGravity = 0.5, maxVel = 10, minVel = -10;
     //todo: remove this maybe? for debugging
     double flingXVel = 0, flingYVel = 0;
@@ -45,6 +48,8 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
         super.onCreate(savedInstanceState);
 
         gameView = new GameView(this);
+        //gameView.setBackground(getResources().getDrawable(R.drawable.flightbackground));
+
         this.setContentView(gameView);
         getGesture = new GestureDetector(this, this);
         startTime = SystemClock.elapsedRealtime();
@@ -216,7 +221,11 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
 
         protected void drawTheCanvas(Canvas canvas) {
             backPaint.setAlpha(255);
-            canvas.drawColor(Color.GRAY);
+            //canvas.drawColor(Color.GRAY);
+            String pathName; //TODO: needed?
+            //Bitmap flightBackground = BitmapFactory.decodeResource(getResources(), R.drawable.flightbackground);
+            Bitmap flightBackground = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.flightbackground), canvas.getWidth(), canvas.getHeight(),false);
+            canvas.drawBitmap(flightBackground, 0,0,backPaint);
             Paint paint = new Paint();
             paint.setColor(Color.BLACK);
             paint.setTextSize(16);
@@ -284,8 +293,10 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
 
             //TODO: move this into the above switch
             //Check if time to add more to the gravity, increase if it is. Reset the flight time
-            if (tempTime > 15) {
+            if (tempTime > gravityChange) {
                 planetGravity += 0.5;
+                maxVel += 5;
+                minVel -= 5;
                 flightTime = SystemClock.elapsedRealtime();
             }
 
