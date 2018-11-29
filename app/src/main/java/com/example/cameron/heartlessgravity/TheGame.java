@@ -79,8 +79,10 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
         Log.d(TAG+"onResume", "Inside");
         //Keeps the right amount of time, else the velocity will instakill
         if (stopTime > 0) {
-            long difTime = stopTime - startTime;
-            startTime = SystemClock.elapsedRealtime() - difTime;
+            long difTime1 = stopTime - startTime;
+            long difTime2 = stopTime - flightTime;
+            startTime = SystemClock.elapsedRealtime() - difTime1;
+            flightTime = SystemClock.elapsedRealtime() - difTime2;
         }
         gameView.resume();
     }
@@ -156,14 +158,10 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
         int cordX = (int)e.getX();
         int cordY = (int)e.getY();
         touchRect = new Rect(cordX, cordY, (cordX + 50), (cordY + 50));
-        if (Rect.intersects(touchRect, shipRect)) {
-            return true;
-        }
-        return false;
+        return Rect.intersects(touchRect, shipRect);
     }
 
     public class GameView extends SurfaceView implements Runnable {
-
         Thread ViewThread = null;
         SurfaceHolder holder;
         boolean threadInFocus = true;

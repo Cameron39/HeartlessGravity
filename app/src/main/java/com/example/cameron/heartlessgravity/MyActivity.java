@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 //TODO: make the gravity and time lengths two different fields
 //TODO: Make the instructions clearer/better
+//TODO: Make an Icon!
 /*Tips:
   Don't touch sides
   Small flings
