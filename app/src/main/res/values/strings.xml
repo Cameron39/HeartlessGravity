@@ -1,7 +1,10 @@
 <resources>
     <string name="app_name">Heartless Gravity</string>
     <string name="launch">Launch</string>
-    <string name="HelpText">Fling the spaceship up with your finger while preventing it from hitting the bottom and avoiding the very top!</string>
+    <string name="HelpText">Do not let the ship touch the top or bottom\n\nUse your finger to fling the ship\n\nThe sides also slow the ship down\n\nGravity increases as you progress</string>
+    <string name="LaunchText">Click the Ship to Launch</string>
     <string name="imageCredit">All Images Designed by Freepik</string>
-    <string name="Launch2"><![CDATA[>Launch<]]></string>
+    <string name="lose">You Lose!</string>
+    <string name="winbarely">You Win&#8230;BARELY</string>
+    <string name="win">You WIN!!!</string>
 </resources>

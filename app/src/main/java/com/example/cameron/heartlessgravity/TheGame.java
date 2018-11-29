@@ -23,15 +23,11 @@ import android.view.SurfaceView;
 import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_UP;
 
-//TODO: show score during flight (Gravity Level)
-//TODO: Need a definative win or lose
-
 public class TheGame extends Activity implements GestureDetector.OnGestureListener {
 
     String TAG = "TheGame-";
     GameView gameView;
     Paint backPaint = new Paint(), countPaint = new Paint(), redWarning = new Paint();
-    //Paint redWarning = new Paint(); //TODO: cleanuip
     int shipXLoc = 400, shipYLoc = 100, playerLives = 3, tempTime = 0, gravityLevel = 0;
     final int gravityChange = 10; //how long it takes for the gravity to change
     double shipXVel = 0, shipYVel = 5, gravityPull = 0.5, maxVel = 10, minVel = -10;
@@ -139,11 +135,9 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
     public boolean onTouchEvent (MotionEvent e) {
 
         switch (e.getActionMasked()) {
-            //todo: cleanup
             case ACTION_UP:
                 mainShip = fllShip;
                 break;
-
             case ACTION_DOWN:
                 if (hasShipCollision(e)) {
                     mainShip = accShip;
