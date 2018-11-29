@@ -3,4 +3,5 @@
     <string name="launch">Launch</string>
     <string name="HelpText">Fling the spaceship up with your finger while preventing it from hitting the bottom and avoiding the very top!</string>
     <string name="imageCredit">All Images Designed by Freepik</string>
+    <string name="Launch2"><![CDATA[>Launch<]]></string>
 </resources>

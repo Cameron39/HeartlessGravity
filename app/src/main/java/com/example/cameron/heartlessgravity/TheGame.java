@@ -286,9 +286,7 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
                 gravityLevel++;
                 flightTime = SystemClock.elapsedRealtime();
             }
-
         }
-
 
         public void failure(){
             playerLives -=1; //decrement a life
