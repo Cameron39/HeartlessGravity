@@ -23,24 +23,25 @@ import android.view.SurfaceView;
 import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_UP;
 
-//TODO: show score during flight
+//TODO: show score during flight (Gravity Level)
 //TODO: Need a definative win or lose
 
 public class TheGame extends Activity implements GestureDetector.OnGestureListener {
 
     String TAG = "TheGame-";
     GameView gameView;
-    Paint backPaint = new Paint();
-    Paint redWarning = new Paint();
-    int shipXLoc = 400, shipYLoc = 100, playerLives = 3, tempTime = 0;
+    Paint backPaint = new Paint(), countPaint = new Paint(), redWarning = new Paint();
+    //Paint redWarning = new Paint(); //TODO: cleanuip
+    int shipXLoc = 400, shipYLoc = 100, playerLives = 3, tempTime = 0, gravityLevel = 0;
     final int gravityChange = 10; //how long it takes for the gravity to change
-    double shipXVel = 0, shipYVel = 5, planetGravity = 0.5, maxVel = 10, minVel = -10;
+    double shipXVel = 0, shipYVel = 5, gravityPull = 0.5, maxVel = 10, minVel = -10;
     double flingXVel = 0, flingYVel = 0;
     Bitmap mainShip, accShip, fllShip;
     private GestureDetector getGesture;
     Rect shipRect, touchRect;
     long startTime = 0, stopTime = 0, flightTime = 0, totalFlightTime = 0;
-    MediaPlayer mp = new MediaPlayer();
+    MediaPlayer mpBurst = new MediaPlayer();
+    MediaPlayer mpFail = new MediaPlayer();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +52,8 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
 
         this.setContentView(gameView);
         getGesture = new GestureDetector(this, this);
-        mp = MediaPlayer.create(this, R.raw.rocketgo);
+        mpBurst = MediaPlayer.create(this, R.raw.rocketgo);
+        mpFail = MediaPlayer.create(this, R.raw.failure);
 
         startTime = SystemClock.elapsedRealtime();
         totalFlightTime = startTime;
@@ -143,7 +145,7 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
             case ACTION_DOWN:
                 if (hasShipCollision(e)) {
                     mainShip = accShip;
-                    mp.start();
+                    mpBurst.start();
                 }
                 break;
         }
@@ -208,20 +210,38 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
         }
 
         protected void drawTheCanvas(Canvas canvas) {
-            backPaint.setAlpha(255);
-            //canvas.drawColor(Color.GRAY);
-            //TODO: try a second paint for the color tinting.
+            tempTime = (int)((SystemClock.elapsedRealtime()-flightTime)/1000);
             Bitmap flightBackground = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.flightbackground), canvas.getWidth(), canvas.getHeight(),false);
             ColorFilter filter = new LightingColorFilter(Color.argb(10, 125, 0,0), 0);
             redWarning.setColorFilter(filter);
-            //backPaint.setColorFilter(filter);
-            canvas.drawBitmap(flightBackground, 0,0, backPaint);
-            //backPaint.setColorFilter(new PorterDuffColorFilter(Color.RED, PorterDuff.Mode.SRC_IN));
-            canvas.drawBitmap(mainShip, shipXLoc, shipYLoc, backPaint);
+            redWarning.setTextSize(100);
+            redWarning.setColor(Color.BLACK);
+            backPaint.setAlpha(255);
             backPaint.setColor(Color.BLACK);
             backPaint.setTextSize(50);
             backPaint.setAntiAlias(true);
             backPaint.setStyle(Paint.Style.FILL);
+            countPaint.setAlpha(150);
+            countPaint.setColor(Color.BLACK);
+            countPaint.setTextSize(500);
+            countPaint.setAntiAlias(true);
+            countPaint.setStyle(Paint.Style.FILL);
+
+            canvas.drawBitmap(flightBackground, 0,0, backPaint);
+            if (tempTime == gravityChange) {
+                canvas.drawBitmap(flightBackground, 0, 0, redWarning);
+                canvas.drawText("Gravity Increase", canvas.getWidth()/6, canvas.getHeight()/4, redWarning);
+            } else if (tempTime == (gravityChange -1)) {
+                canvas.drawText("1", (float)((canvas.getWidth())/2.8), (canvas.getHeight())/3, countPaint);
+            } else if (tempTime == (gravityChange -2)) {
+                canvas.drawText("2", (float)((canvas.getWidth())/2.8), (canvas.getHeight())/3, countPaint);
+            } else if (tempTime == (gravityChange -3)) {
+                canvas.drawText("3", (float)((canvas.getWidth())/2.8), (canvas.getHeight())/3, countPaint);
+            } else {
+                canvas.drawBitmap(flightBackground, 0,0, backPaint);
+            }
+
+            canvas.drawBitmap(mainShip, shipXLoc, shipYLoc, backPaint);
 
             //For debugging purposes
             //canvas.drawText("RY:" + String.valueOf(shipYVel), 50,50, backPaint);
@@ -229,12 +249,13 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
             //canvas.drawText("FY:" + String.valueOf(flingYVel), 500, 50, backPaint);
             //canvas.drawText("FX:" + String.valueOf(flingXVel), 500, 80, backPaint);
 
-            canvas.drawText("Gravity Increase In: " + (gravityChange-((SystemClock.elapsedRealtime() - flightTime)/1000)), 50, 50, backPaint);
+            canvas.drawText("Gravity Level: " + gravityLevel, 50, 50, backPaint);
+            //canvas.drawText("Gravity Increase In: " + (gravityChange-((SystemClock.elapsedRealtime() - flightTime)/1000)), 50, 50, backPaint);
             canvas.drawText("Lives:" + playerLives, 50, (canvas.getHeight()-50), backPaint);
 
             //Calculate the new velocity accounting for gravity
             float acceleration = ((SystemClock.elapsedRealtime() - startTime)/1000);
-            shipYVel = shipYVel + (planetGravity * acceleration);
+            shipYVel = shipYVel + (gravityPull * acceleration);
             if (shipYVel > maxVel) {shipYVel = maxVel;}
             if (shipYVel < minVel) {shipYVel = minVel;}
 
@@ -256,15 +277,13 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
                 failure();
             }
 
-            tempTime = (int)((SystemClock.elapsedRealtime()-flightTime)/1000);
-
-            //TODO: move this into the above switch
             //Check if time to add more to the gravity, increase if it is. Reset the flight time
             if (tempTime > gravityChange) {
-                planetGravity += 0.5;
+                gravityPull += 0.5;
                 maxVel += 5;
                 minVel -= 5;
                 playerLives++;
+                gravityLevel++;
                 flightTime = SystemClock.elapsedRealtime();
             }
 
@@ -273,14 +292,14 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
 
         public void failure(){
             playerLives -=1; //decrement a life
+            mpFail.start();
             Log.d(TAG + "GS-failure", "Player Lives: " + playerLives);
             if (playerLives > 0) {
                 Log.d(TAG + "GS-failure", "Player Still alive with " + playerLives);
-                //TODO: draw a careful
             } else {
                 totalFlightTime = (int)((SystemClock.elapsedRealtime() - totalFlightTime)/1000);
                 Intent returnIntent = new Intent();
-                returnIntent.putExtra("gravity", String.valueOf((int)(planetGravity/0.5)-1));
+                returnIntent.putExtra("gravity", String.valueOf(gravityLevel));
                 returnIntent.putExtra("flightTime", String.valueOf(totalFlightTime));
                 setResult(Activity.RESULT_OK, returnIntent);
                 finish();
