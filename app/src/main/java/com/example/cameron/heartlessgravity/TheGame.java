@@ -10,9 +10,8 @@ import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.LightingColorFilter;
 import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
 import android.graphics.Rect;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.Log;
@@ -20,17 +19,12 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.widget.LinearLayout;
 
 import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_UP;
 
-//TODO: reduce time from 15 seconds to 10???
 //TODO: show score during flight
-//TODO: add screen when a life is lost? Maybe not... Reset the ship loc/vel at life lost?
-//TODO: Use a select case to switch the background around? At 10, 13, and 15 seconds
-//TODO: On the mains screen, make the Gravity the number of gravity increases
-
+//TODO: Need a definative win or lose
 
 public class TheGame extends Activity implements GestureDetector.OnGestureListener {
 
@@ -41,12 +35,12 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
     int shipXLoc = 400, shipYLoc = 100, playerLives = 3, tempTime = 0;
     final int gravityChange = 10; //how long it takes for the gravity to change
     double shipXVel = 0, shipYVel = 5, planetGravity = 0.5, maxVel = 10, minVel = -10;
-    //todo: remove this maybe? for debugging
     double flingXVel = 0, flingYVel = 0;
     Bitmap mainShip, accShip, fllShip;
     private GestureDetector getGesture;
     Rect shipRect, touchRect;
     long startTime = 0, stopTime = 0, flightTime = 0, totalFlightTime = 0;
+    MediaPlayer mp = new MediaPlayer();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +51,8 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
 
         this.setContentView(gameView);
         getGesture = new GestureDetector(this, this);
+        mp = MediaPlayer.create(this, R.raw.rocketgo);
+
         startTime = SystemClock.elapsedRealtime();
         totalFlightTime = startTime;
         flightTime = startTime;
@@ -147,6 +143,7 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
             case ACTION_DOWN:
                 if (hasShipCollision(e)) {
                     mainShip = accShip;
+                    mp.start();
                 }
                 break;
         }

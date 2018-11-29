@@ -1,8 +1,6 @@
 <resources>
     <string name="app_name">Heartless Gravity</string>
     <string name="launch">Launch</string>
-    <string name="help">Help</string>
-    <string name="credits">Credits</string>
     <string name="HelpText">Fling the spaceship up with your finger while preventing it from hitting the bottom and avoiding the very top!</string>
     <string name="imageCredit">All Images Designed by Freepik</string>
 </resources>
