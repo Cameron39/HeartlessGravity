@@ -44,8 +44,6 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
         super.onCreate(savedInstanceState);
 
         gameView = new GameView(this);
-        //gameView.setBackground(getResources().getDrawable(R.drawable.flightbackground));
-
         this.setContentView(gameView);
         getGesture = new GestureDetector(this, this);
         mpBurst = MediaPlayer.create(this, R.raw.rocketgo);
@@ -96,7 +94,6 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
 
     @Override
     public void onShowPress(MotionEvent e) {
-
     }
 
     @Override
@@ -111,7 +108,6 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
 
     @Override
     public void onLongPress(MotionEvent e) {
-
     }
 
     @Override
@@ -171,11 +167,9 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
                 if (!holder.getSurface().isValid()){
                     continue;
                 }
-
                 Canvas gameCanvas = holder.lockCanvas();
                 //Need to specify the falling ship else the engine thrust can count as failure
                 shipRect = new Rect(shipXLoc, shipYLoc, shipXLoc + fllShip.getWidth(), shipYLoc + fllShip.getHeight());
-
                 drawTheCanvas(gameCanvas);
                 holder.unlockCanvasAndPost(gameCanvas);
             }
@@ -232,7 +226,6 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
             } else {
                 canvas.drawBitmap(flightBackground, 0,0, backPaint);
             }
-
             canvas.drawBitmap(mainShip, shipXLoc, shipYLoc, backPaint);
 
             //For debugging purposes
@@ -242,7 +235,6 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
             //canvas.drawText("FX:" + String.valueOf(flingXVel), 500, 80, backPaint);
 
             canvas.drawText("Gravity Level: " + gravityLevel, 50, 50, backPaint);
-            //canvas.drawText("Gravity Increase In: " + (gravityChange-((SystemClock.elapsedRealtime() - flightTime)/1000)), 50, 50, backPaint);
             canvas.drawText("Lives:" + playerLives, 50, (canvas.getHeight()-50), backPaint);
 
             //Calculate the new velocity accounting for gravity

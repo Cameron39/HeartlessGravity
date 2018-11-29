@@ -35,10 +35,9 @@ public class MyActivity extends Activity {
 
         if (requestCode == 1) { //from TheGame.java
             if (resultCode == Activity.RESULT_OK){
-                gravityLevel = "Gravity Level: " + data.getStringExtra("gravity");
+                gravityLevel =  data.getStringExtra("gravity");
                 flightTime = "Flight Time: " + data.getStringExtra("flightTime") +"s";
-                txtReturnTime.setText(flightTime);
-                txtReturnGravity.setText(gravityLevel);
+                //TODO: Has the Gravity Level part!  Need to re-arrange!
                 switch (Integer.valueOf(gravityLevel)) {
                     case 0:
                         txtResult.setText(getString(R.string.lose));
@@ -47,8 +46,11 @@ public class MyActivity extends Activity {
                         txtResult.setText(getString(R.string.winbarely));
                         break;
                     default:
-                        txtResult.setText(R.string.win);
+                        txtResult.setText(getString(R.string.win));
                 }
+                gravityLevel = "Gravity Level: " + gravityLevel;
+                txtReturnTime.setText(flightTime);
+                txtReturnGravity.setText(gravityLevel);
             }
         }
     }
