@@ -25,7 +25,7 @@ import static android.view.MotionEvent.ACTION_UP;
 
 public class TheGame extends Activity implements GestureDetector.OnGestureListener {
 
-    String TAG = "TheGame-";
+    final String TAG = "TheGame-";
     GameView gameView;
     Paint backPaint = new Paint(), countPaint = new Paint(), redWarning = new Paint();
     int shipXLoc = 400, shipYLoc = 100, playerLives = 3, tempTime = 0, gravityLevel = 0;
@@ -52,7 +52,7 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
         startTime = SystemClock.elapsedRealtime();
         totalFlightTime = startTime;
         flightTime = startTime;
-        Log.d(TAG+"onCreate", "startTime: " +  startTime);
+        Log.d(TAG + "onCreate", "startTime: " +  startTime);
         accShip = BitmapFactory.decodeResource(getResources(), R.drawable.ship1acc);
         fllShip = BitmapFactory.decodeResource(getResources(), R.drawable.ship1fall);
         mainShip = fllShip;
@@ -62,7 +62,7 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
     @Override
     protected void onPause(){
         super.onPause();
-        Log.d(TAG+"onPause", "Inside");
+        Log.d(TAG  +"onPause", "Inside");
         stopTime = SystemClock.elapsedRealtime();
         gameView.pause();
     }
@@ -70,7 +70,7 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
     @Override
     protected void onResume(){
         super.onResume();
-        Log.d(TAG+"onResume", "Inside");
+        Log.d(TAG + "onResume", "Inside");
         //Keeps the right amount of time, else the velocity will instakill
         if (stopTime > 0) {
             long difTime1 = stopTime - startTime;
@@ -129,7 +129,6 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
     }
 
     public boolean onTouchEvent (MotionEvent e) {
-
         switch (e.getActionMasked()) {
             case ACTION_UP:
                 mainShip = fllShip;
@@ -168,7 +167,6 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
                     continue;
                 }
                 Canvas gameCanvas = holder.lockCanvas();
-                //Need to specify the falling ship else the engine thrust can count as failure
                 shipRect = new Rect(shipXLoc, shipYLoc, shipXLoc + fllShip.getWidth(), shipYLoc + fllShip.getHeight());
                 drawTheCanvas(gameCanvas);
                 holder.unlockCanvasAndPost(gameCanvas);
@@ -182,7 +180,7 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
                 try {
                     ViewThread.join();
                 } catch (InterruptedException e) {
-                    Log.e(TAG+"GameSetup-Pause", e.getStackTrace().toString());
+                    Log.e(TAG+"GameSetup-Pause", "Exception", e);
                 }
                 break;
             }
@@ -272,6 +270,7 @@ public class TheGame extends Activity implements GestureDetector.OnGestureListen
             }
         }
 
+        //Hits the top or bottom, update and react accordingly
         public void failure(){
             playerLives -=1; //decrement a life
             mpFail.start();
