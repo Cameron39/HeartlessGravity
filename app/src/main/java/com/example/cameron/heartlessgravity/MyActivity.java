@@ -1,3 +1,18 @@
+/*
+Cameron Pitcel
+CSC 470 Intro to Android Fall 2018
+Project 5, Game
+
+Idea is a ship that is being pulled down towards a planet's surface that must be flung up
+using the player's finger.
+Gravity increases every 10 seconds along with the min/max velocity
+Player starts out with 3 lives and increases by one with every gravity increase
+Touching the top or the bottom will reduce a life.
+When the players run out of lives, the game is done.
+
+The name, Heartless Gravity, is a play on words from the idea that Gravity is a Heartless B*tch
+All credit for images and icon used goes to Freepik, I take no credit for them.
+ */
 package com.example.cameron.heartlessgravity;
 
 import android.app.Activity;
@@ -5,14 +20,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
-//TODO: Make an Icon!
 
 public class MyActivity extends Activity {
 
     public static final String restartStatus = "Status";
-    private boolean restart = false;
+    final private boolean restart = false;
     private String flightTime = "0", gravityLevel = "0";
-    TextView txtReturnTime, txtReturnGravity, txtTips, txtResult;
+    TextView txtReturnTime, txtReturnGravity, txtResult;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,7 +34,6 @@ public class MyActivity extends Activity {
         setContentView(R.layout.activity_main);
         txtReturnTime = findViewById(R.id.txtReturnTime);
         txtReturnGravity = findViewById(R.id.txtReturnGravity);
-        txtTips = findViewById(R.id.txtTips);
         txtResult = findViewById(R.id.txtResult);
     }
 
